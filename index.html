@@ -2,90 +2,93 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Bruce Ledger – Two Bucket Model</title>
+  <title>Bruce Ledger</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
 <h1>Bruce Ledger</h1>
 
-<div class="balances">
-  <div>
-    <div class="label">Discretionary</div>
-    <div id="discBalance" class="big">$0.00</div>
-  </div>
-  <div>
-    <div class="label">Held / Allocated</div>
-    <div id="heldBalance" class="big">$0.00</div>
+<!-- BALANCES CARD -->
+<div class="card balances-card">
+  <div class="balance-row">
+    <div class="balance-block">
+      <div class="label">Discretionary</div>
+      <div id="discBalance" class="amount">$0.00</div>
+    </div>
+    <div class="balance-block">
+      <div class="label">Held / Allocated</div>
+      <div id="heldBalance" class="amount">$0.00</div>
+    </div>
   </div>
 </div>
 
-<div class="nav">
-  <button id="entryViewBtn">Entry</button>
+<!-- NAV CARD -->
+<div class="card nav-card">
+  <button id="entryViewBtn" class="primary">Entry</button>
   <button id="ledgerViewBtn">Ledger</button>
 </div>
 
-<!-- ENTRY PAGE -->
-<section id="entryView">
+<!-- ENTRY CARD -->
+<section id="entryView" class="card">
+  <h2>Add Transaction</h2>
+
   <form id="transactionForm">
-    <h2>Add Transaction</h2>
+    <label>
+      Date
+      <input type="date" id="date" required />
+    </label>
 
-    <div class="grid">
-      <label>
-        Date
-        <input type="date" id="date" required />
-      </label>
+    <label>
+      Amount
+      <input type="number" id="amount" step="0.01"
+             inputmode="decimal" pattern="[0-9]*" required />
+    </label>
 
-      <label>
-        Amount
-        <input type="number" id="amount" step="0.01"
-               inputmode="decimal" pattern="[0-9]*" required />
-      </label>
+    <label>
+      From
+      <select id="fromBucket" required>
+        <option value="">Select</option>
+        <option value="Discretionary">Discretionary</option>
+        <option value="Held">Held / Allocated</option>
+      </select>
+    </label>
 
-      <label>
-        From
-        <select id="fromBucket" required>
-          <option value="">Select</option>
-          <option value="Discretionary">Discretionary</option>
-          <option value="Held">Held / Allocated</option>
-        </select>
-      </label>
+    <label>
+      To
+      <select id="toBucket" required>
+        <option value="">Select</option>
+        <option value="Discretionary">Discretionary</option>
+        <option value="Held">Held / Allocated</option>
+      </select>
+    </label>
 
-      <label>
-        To
-        <select id="toBucket" required>
-          <option value="">Select</option>
-          <option value="Discretionary">Discretionary</option>
-          <option value="Held">Held / Allocated</option>
-        </select>
-      </label>
+    <label>
+      Tag
+      <select id="tag">
+        <option value="">None</option>
+        <option value="Income">Income</option>
+        <option value="Spending Money">Spending Money</option>
+        <option value="Rent">Rent</option>
+        <option value="Storage">Storage</option>
+        <option value="Savings">Savings</option>
+        <option value="Other">Other</option>
+      </select>
+    </label>
 
-      <label>
-        Tag
-        <select id="tag">
-          <option value="">None</option>
-          <option value="Income">Income</option>
-          <option value="Spending Money">Spending Money</option>
-          <option value="Rent">Rent</option>
-          <option value="Storage">Storage</option>
-          <option value="Savings">Savings</option>
-          <option value="Other">Other</option>
-        </select>
-      </label>
+    <label>
+      Notes
+      <input type="text" id="notes" placeholder="Optional" />
+    </label>
 
-      <label>
-        Notes
-        <input type="text" id="notes" placeholder="Optional" />
-      </label>
-    </div>
-
-    <button type="submit">Add Transaction</button>
+    <button type="submit" class="primary full">Add Transaction</button>
   </form>
 </section>
 
-<!-- LEDGER PAGE -->
-<section id="ledgerView" class="hidden">
+<!-- LEDGER CARD -->
+<section id="ledgerView" class="card hidden">
   <h2>Ledger</h2>
+
   <table>
     <thead>
       <tr>
@@ -100,7 +103,7 @@
     <tbody id="ledgerBody"></tbody>
   </table>
 
-  <button id="printBtn">Print / Save PDF</button>
+  <button id="printBtn" class="full">Print / Save PDF</button>
 </section>
 
 <script src="script.js"></script>
