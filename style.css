@@ -86,3 +86,50 @@ button {
   margin-right: 8px;
   margin-top: 8px;
 }
+
+/* =========================
+   Ledger Page / Tabs
+   ========================= */
+
+.tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.tab {
+  flex: 1;
+  padding: 10px;
+  border-radius: 999px;
+  border: 1px solid #ccc;
+  background: #fff;
+  cursor: pointer;
+}
+
+.tab.active {
+  background: #0b3d3b;
+  color: #fff;
+}
+
+.page {
+  display: none;
+}
+
+.page.active {
+  display: block;
+}
+
+/* =========================
+   Ledger Filters / Actions
+   ========================= */
+
+.filters {
+  display: grid;
+  gap: 12px;
+}
+
+.danger {
+  background: #fff;
+  border-color: #b00020;
+  color: #b00020;
+}
