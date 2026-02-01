@@ -12,71 +12,92 @@
 
   <h1>John Dickerson<br><small>Fiduciary Ledger</small></h1>
 
-  <!-- BALANCES -->
-  <div class="balances card">
-    <div class="balance">
-      <label>Savings / Allocated</label>
-      <div id="savingsBalance">$0.00</div>
+  <!-- NAV -->
+  <div class="tabs">
+    <button class="tab active" id="tabDashboard">Dashboard</button>
+    <button class="tab" id="tabLedger">Ledger</button>
+  </div>
+
+  <!-- PAGE 1: DASHBOARD -->
+  <div id="pageDashboard" class="page active">
+
+    <div class="balances card">
+      <div class="balance">
+        <label>Savings / Allocated</label>
+        <div id="savingsBalance">$0.00</div>
+      </div>
+      <div class="balance">
+        <label>Monthly Goings-On</label>
+        <div id="goingsBalance">$0.00</div>
+      </div>
+      <div class="balance">
+        <label>Fronted (Owed to April)</label>
+        <div id="frontedBalance" class="negative">$0.00</div>
+      </div>
     </div>
-    <div class="balance">
-      <label>Monthly Goings-On</label>
-      <div id="goingsBalance">$0.00</div>
-    </div>
-    <div class="balance">
-      <label>Fronted (Owed to April)</label>
-      <div id="frontedBalance" class="negative">$0.00</div>
+
+    <div class="card">
+      <h2>Add / Edit Transaction</h2>
+
+      <form id="txForm">
+        <input type="hidden" id="editId" />
+
+        <label>Date</label>
+        <input type="date" id="date" required />
+
+        <label>Amount</label>
+        <input type="number" id="amount" step="0.01" inputmode="decimal" required />
+
+        <label>From</label>
+        <select id="from" required>
+          <option value="">Select</option>
+          <option>WF Checking (John)</option>
+          <option>Savings / Allocated</option>
+          <option>Monthly Goings-On</option>
+          <option>April Personal (FAIRWINDS)</option>
+          <option>Other / External</option>
+        </select>
+
+        <label>To</label>
+        <select id="to" required>
+          <option value="">Select</option>
+          <option>Savings / Allocated</option>
+          <option>Monthly Goings-On</option>
+          <option>John Checking (External)</option>
+          <option>Rent / Bills (External)</option>
+          <option>Reimburse April (FAIRWINDS)</option>
+          <option>Fronted (Owed to April)</option>
+          <option>Other / External</option>
+        </select>
+
+        <label>Notes (optional)</label>
+        <input type="text" id="notes" />
+
+        <button type="submit">Save Transaction</button>
+      </form>
     </div>
   </div>
 
-  <!-- FORM -->
-  <div class="card">
-    <h2>Add / Edit Transaction</h2>
+  <!-- PAGE 2: LEDGER -->
+  <div id="pageLedger" class="page">
 
-    <form id="txForm">
-      <input type="hidden" id="editId" />
+    <div class="card">
+      <h2>Ledger</h2>
 
-      <label>Date</label>
-      <input type="date" id="date" required />
+      <div class="filters">
+        <label>Start Date</label>
+        <input type="date" id="filterStart" />
 
-      <label>Amount</label>
-      <input type="number" id="amount" step="0.01" required inputmode="decimal" />
+        <label>End Date</label>
+        <input type="date" id="filterEnd" />
 
-      <label>From</label>
-      <select id="from" required>
-        <option value="">Select</option>
-        <option>WF Checking (John)</option>
-        <option>Savings / Allocated</option>
-        <option>Monthly Goings-On</option>
-        <option>April Personal (FAIRWINDS)</option>
-        <option>Other / External</option>
-      </select>
+        <button id="exportRange">Export Range (PDF)</button>
+        <button class="danger" id="deleteRange">Delete Range</button>
+      </div>
 
-      <label>To</label>
-      <select id="to" required>
-        <option value="">Select</option>
-        <option>Savings / Allocated</option>
-        <option>Monthly Goings-On</option>
-        <option>John Checking (External)</option>
-        <option>Rent / Bills (External)</option>
-        <option>Reimburse April (FAIRWINDS)</option>
-        <option>Fronted (Owed to April)</option>
-        <option>Other / External</option>
-      </select>
-
-      <label>Notes (optional)</label>
-      <input type="text" id="notes" placeholder="Context / reminder" />
-
-      <button type="submit">Save Transaction</button>
-    </form>
+      <div id="ledger"></div>
+    </div>
   </div>
-
-  <!-- LEDGER -->
-  <div class="card">
-    <h2>Ledger</h2>
-    <div id="ledger"></div>
-  </div>
-
-  <button onclick="window.print()">Print / Save as PDF</button>
 
 </div>
 
