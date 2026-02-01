@@ -5,6 +5,11 @@ const goingsEl = document.getElementById("goingsBalance");
 const frontedEl = document.getElementById("frontedBalance");
 const ledgerEl = document.getElementById("ledger");
 
+const pageDashboard = document.getElementById("pageDashboard");
+const pageLedger = document.getElementById("pageLedger");
+const tabDashboard = document.getElementById("tabDashboard");
+const tabLedger = document.getElementById("tabLedger");
+
 const rules = {
   "WF Checking (John)": ["Savings / Allocated"],
   "Savings / Allocated": [
@@ -20,74 +25,87 @@ const rules = {
   "Other / External": ["Savings / Allocated"]
 };
 
+function switchPage(page) {
+  pageDashboard.classList.remove("active");
+  pageLedger.classList.remove("active");
+  tabDashboard.classList.remove("active");
+  tabLedger.classList.remove("active");
+
+  if (page === "dashboard") {
+    pageDashboard.classList.add("active");
+    tabDashboard.classList.add("active");
+  } else {
+    pageLedger.classList.add("active");
+    tabLedger.classList.add("active");
+    renderLedger();
+  }
+}
+
+tabDashboard.onclick = () => switchPage("dashboard");
+tabLedger.onclick = () => switchPage("ledger");
+
 function recalc() {
-  let savings = 0;
-  let goings = 0;
-  let fronted = 0;
+  let savings = 0, goings = 0, fronted = 0;
 
   transactions.forEach(t => {
     const amt = parseFloat(t.amount);
-
     if (t.to === "Savings / Allocated") savings += amt;
     if (t.from === "Savings / Allocated") savings -= amt;
-
     if (t.to === "Monthly Goings-On") goings += amt;
     if (t.from === "Monthly Goings-On") goings -= amt;
-
     if (t.to === "Fronted (Owed to April)") fronted -= amt;
     if (t.to === "Reimburse April (FAIRWINDS)") fronted += amt;
   });
-
-  if (goings < 0) alert("Monthly Goings-On cannot be negative.");
-  if (fronted > 0) fronted = 0;
 
   savingsEl.textContent = `$${savings.toFixed(2)}`;
   goingsEl.textContent = `$${goings.toFixed(2)}`;
   frontedEl.textContent = `$${fronted.toFixed(2)}`;
 }
 
-function render() {
+function filteredTx() {
+  const start = document.getElementById("filterStart").value;
+  const end = document.getElementById("filterEnd").value;
+
+  return transactions.filter(t => {
+    if (start && t.date < start) return false;
+    if (end && t.date > end) return false;
+    return true;
+  });
+}
+
+function renderLedger() {
   ledgerEl.innerHTML = "";
-  [...transactions].reverse().forEach(t => {
+  filteredTx().slice().reverse().forEach(t => {
     const div = document.createElement("div");
     div.className = "tx";
     div.innerHTML = `
       <strong>${t.date} — $${parseFloat(t.amount).toFixed(2)}</strong>
-      ${t.from} → ${t.to}<br>
-      ${t.notes || ""}
-      <div class="tx-actions">
-        <button onclick="editTx('${t.id}')">Edit</button>
-        <button onclick="deleteTx('${t.id}')">Delete</button>
-      </div>
+      ${t.from} → ${t.to}<br>${t.notes || ""}
     `;
     ledgerEl.appendChild(div);
   });
-  recalc();
 }
 
-function editTx(id) {
-  const t = transactions.find(x => x.id === id);
-  if (!t) return;
+document.getElementById("exportRange").onclick = () => {
+  window.print();
+};
 
-  editId.value = t.id;
-  date.value = t.date;
-  amount.value = t.amount;
-  from.value = t.from;
-  to.value = t.to;
-  notes.value = t.notes || "";
-}
+document.getElementById("deleteRange").onclick = () => {
+  const start = filterStart.value || "the beginning";
+  const end = filterEnd.value || "today";
 
-function deleteTx(id) {
-  transactions = transactions.filter(t => t.id !== id);
-  save();
-}
+  if (!confirm(`Are you sure you want to delete all transactions from ${start} to ${end}?`)) return;
 
-function save() {
+  const typed = prompt("Type DELETE to confirm.");
+  if (typed !== "DELETE") return;
+
+  transactions = transactions.filter(t => !filteredTx().includes(t));
   localStorage.setItem("johnLedger", JSON.stringify(transactions));
-  render();
-}
+  renderLedger();
+  recalc();
+};
 
-document.getElementById("txForm").addEventListener("submit", e => {
+document.getElementById("txForm").onsubmit = e => {
   e.preventDefault();
 
   const tx = {
@@ -110,7 +128,8 @@ document.getElementById("txForm").addEventListener("submit", e => {
 
   e.target.reset();
   editId.value = "";
-  save();
-});
+  localStorage.setItem("johnLedger", JSON.stringify(transactions));
+  recalc();
+};
 
-render();
+recalc();
