@@ -2,113 +2,84 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Bruce Ledger</title>
+  <title>John Dickerson – Fiduciary Ledger</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="style.css" />
+</head>
 <body>
-  <div class="app">
 
-    <h1>Bruce Ledger</h1>
+<div class="app">
 
-<!-- BALANCES CARD -->
-<div class="card balances-card">
-  <div class="balance-row">
-    <div class="balance-block">
-      <div class="label">Discretionary</div>
-      <div id="discBalance" class="amount">$0.00</div>
+  <h1>John Dickerson<br><small>Fiduciary Ledger</small></h1>
+
+  <!-- BALANCES -->
+  <div class="balances card">
+    <div class="balance">
+      <label>Savings / Allocated</label>
+      <div id="savingsBalance">$0.00</div>
     </div>
-    <div class="balance-block">
-      <div class="label">Held / Allocated</div>
-      <div id="heldBalance" class="amount">$0.00</div>
+    <div class="balance">
+      <label>Monthly Goings-On</label>
+      <div id="goingsBalance">$0.00</div>
+    </div>
+    <div class="balance">
+      <label>Fronted (Owed to April)</label>
+      <div id="frontedBalance" class="negative">$0.00</div>
     </div>
   </div>
-</div>
 
-<!-- NAV CARD -->
-<div class="card nav-card">
-  <button id="entryViewBtn" class="primary">Entry</button>
-  <button id="ledgerViewBtn">Ledger</button>
-</div>
+  <!-- FORM -->
+  <div class="card">
+    <h2>Add / Edit Transaction</h2>
 
-<!-- ENTRY CARD -->
-<section id="entryView" class="card">
-  <h2>Add Transaction</h2>
+    <form id="txForm">
+      <input type="hidden" id="editId" />
 
-  <form id="transactionForm">
-    <label>
-      Date
+      <label>Date</label>
       <input type="date" id="date" required />
-    </label>
 
-    <label>
-      Amount
-      <input type="number" id="amount" step="0.01"
-             inputmode="decimal" pattern="[0-9]*" required />
-    </label>
+      <label>Amount</label>
+      <input type="number" id="amount" step="0.01" required inputmode="decimal" />
 
-    <label>
-      From
-      <select id="fromBucket" required>
+      <label>From</label>
+      <select id="from" required>
         <option value="">Select</option>
-        <option value="Discretionary">Discretionary</option>
-        <option value="Held">Held / Allocated</option>
+        <option>WF Checking (John)</option>
+        <option>Savings / Allocated</option>
+        <option>Monthly Goings-On</option>
+        <option>April Personal (FAIRWINDS)</option>
+        <option>Other / External</option>
       </select>
-    </label>
 
-    <label>
-      To
-      <select id="toBucket" required>
+      <label>To</label>
+      <select id="to" required>
         <option value="">Select</option>
-        <option value="Discretionary">Discretionary</option>
-        <option value="Held">Held / Allocated</option>
+        <option>Savings / Allocated</option>
+        <option>Monthly Goings-On</option>
+        <option>John Checking (External)</option>
+        <option>Rent / Bills (External)</option>
+        <option>Reimburse April (FAIRWINDS)</option>
+        <option>Fronted (Owed to April)</option>
+        <option>Other / External</option>
       </select>
-    </label>
 
-    <label>
-      Tag
-      <select id="tag">
-        <option value="">None</option>
-        <option value="Income">Income</option>
-        <option value="Spending Money">Spending Money</option>
-        <option value="Rent">Rent</option>
-        <option value="Storage">Storage</option>
-        <option value="Savings">Savings</option>
-        <option value="Other">Other</option>
-      </select>
-    </label>
+      <label>Notes (optional)</label>
+      <input type="text" id="notes" placeholder="Context / reminder" />
 
-    <label>
-      Notes
-      <input type="text" id="notes" placeholder="Optional" />
-    </label>
+      <button type="submit">Save Transaction</button>
+    </form>
+  </div>
 
-    <button type="submit" class="primary full">Add Transaction</button>
-  </form>
-</section>
+  <!-- LEDGER -->
+  <div class="card">
+    <h2>Ledger</h2>
+    <div id="ledger"></div>
+  </div>
 
-<!-- LEDGER CARD -->
-<section id="ledgerView" class="card hidden">
-  <h2>Ledger</h2>
+  <button onclick="window.print()">Print / Save as PDF</button>
 
-  <table>
-    <thead>
-      <tr>
-        <th>Date</th>
-        <th>Amount</th>
-        <th>From</th>
-        <th>To</th>
-        <th>Tag</th>
-        <th>Notes</th>
-      </tr>
-    </thead>
-    <tbody id="ledgerBody"></tbody>
-  </table>
-
-  <button id="printBtn" class="full">Print / Save PDF</button>
-</section>
+</div>
 
 <script src="script.js"></script>
-
-  </div>
 </body>
 </html>
-
