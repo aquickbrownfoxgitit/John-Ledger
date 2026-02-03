@@ -85,3 +85,50 @@
         <select id="to" required>
           <option value="">Select</option>
           <option>Savings / Allocated</option>
+          <option>Monthly Goings-On</option>
+          <option>Fronted (from Savings / Allocated)</option>
+          <option>John Checking (External)</option>
+          <option>Rent / Bills (External)</option>
+          <option>Reimburse April (FAIRWINDS)</option>
+          <option>Other / External</option>
+        </select>
+
+        <label>Notes (optional)</label>
+        <input type="text" id="notes" placeholder="Context / explanation">
+
+        <button type="submit">Save Transaction</button>
+
+      </form>
+    </div>
+  </div>
+
+  <!-- =========================
+       PAGE 2: LEDGER
+  ========================== -->
+  <div id="pageLedger" class="page">
+
+    <div class="card">
+      <h2>Ledger</h2>
+
+      <div class="filters">
+        <label>Start Date</label>
+        <input type="date" id="filterStart">
+
+        <label>End Date</label>
+        <input type="date" id="filterEnd">
+
+        <button id="exportRange">Export Range (PDF)</button>
+        <button class="danger" id="deleteRange">Delete Range</button>
+      </div>
+
+      <hr>
+
+      <div id="ledger"></div>
+    </div>
+  </div>
+
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
