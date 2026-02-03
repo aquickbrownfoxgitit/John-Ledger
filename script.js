@@ -122,6 +122,8 @@ document.getElementById("txForm").onsubmit = e => {
   e.target.reset();
   document.getElementById("editId").value = "";
   recalcBalances();
+  alert("Transaction saved.");
+
 };
 
 /* =========================
@@ -231,4 +233,5 @@ savingsInput.value = manualBalances.savings;
 goingsInput.value = manualBalances.goings;
 
 recalcBalances();
+
 
