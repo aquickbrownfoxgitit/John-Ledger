@@ -227,5 +227,8 @@ document.getElementById("exportRange").onclick = () => {
 /* =========================
    Init
 ========================= */
+savingsInput.value = manualBalances.savings;
+goingsInput.value = manualBalances.goings;
 
 recalcBalances();
+
