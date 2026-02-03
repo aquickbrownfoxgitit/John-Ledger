@@ -6,47 +6,69 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="style.css" />
 </head>
-<body>
 
+<body>
 <div class="app">
 
-  <h1>John Dickerson<br><small>Fiduciary Ledger</small></h1>
+  <h1>
+    John Dickerson<br>
+    <small>Fiduciary Ledger</small>
+  </h1>
 
-  <!-- NAV -->
+  <!-- NAV TABS -->
   <div class="tabs">
     <button class="tab active" id="tabDashboard">Dashboard</button>
     <button class="tab" id="tabLedger">Ledger</button>
   </div>
 
-  <!-- PAGE 1: DASHBOARD -->
+  <!-- =========================
+       PAGE 1: DASHBOARD
+  ========================== -->
   <div id="pageDashboard" class="page active">
 
-    <div class="balances card">
+    <!-- BALANCES -->
+    <div class="card balances">
+
       <div class="balance">
         <label>Savings / Allocated</label>
         <div id="savingsBalance">$0.00</div>
+        <input type="number" id="manualSavings" step="0.01" placeholder="Set balance">
+        <button id="setSavings">Set Balance</button>
       </div>
+
       <div class="balance">
         <label>Monthly Goings-On</label>
         <div id="goingsBalance">$0.00</div>
+        <input type="number" id="manualGoings" step="0.01" placeholder="Set balance">
+        <button id="setGoings">Set Balance</button>
       </div>
-      <div class="balance">
-        <label>Fronted (Owed to April)</label>
-        <div id="frontedBalance" class="negative">$0.00</div>
+
+      <div class="balance readonly">
+        <label>Fronted (from Savings / Allocated)</label>
+        <div id="frontedBalance">$0.00</div>
       </div>
+
     </div>
 
+    <!-- TRANSACTION ENTRY -->
     <div class="card">
       <h2>Add / Edit Transaction</h2>
 
       <form id="txForm">
-        <input type="hidden" id="editId" />
+
+        <input type="hidden" id="editId">
 
         <label>Date</label>
-        <input type="date" id="date" required />
+        <input type="date" id="date" required>
 
         <label>Amount</label>
-        <input type="number" id="amount" step="0.01" inputmode="decimal" required />
+        <input
+          type="number"
+          id="amount"
+          step="0.01"
+          inputmode="decimal"
+          required
+        >
 
         <label>From</label>
         <select id="from" required>
@@ -54,6 +76,7 @@
           <option>WF Checking (John)</option>
           <option>Savings / Allocated</option>
           <option>Monthly Goings-On</option>
+          <option>Fronted (from Savings / Allocated)</option>
           <option>April Personal (FAIRWINDS)</option>
           <option>Other / External</option>
         </select>
@@ -62,45 +85,3 @@
         <select id="to" required>
           <option value="">Select</option>
           <option>Savings / Allocated</option>
-          <option>Monthly Goings-On</option>
-          <option>John Checking (External)</option>
-          <option>Rent / Bills (External)</option>
-          <option>Reimburse April (FAIRWINDS)</option>
-          <option>Fronted (Owed to April)</option>
-          <option>Other / External</option>
-        </select>
-
-        <label>Notes (optional)</label>
-        <input type="text" id="notes" />
-
-        <button type="submit">Save Transaction</button>
-      </form>
-    </div>
-  </div>
-
-  <!-- PAGE 2: LEDGER -->
-  <div id="pageLedger" class="page">
-
-    <div class="card">
-      <h2>Ledger</h2>
-
-      <div class="filters">
-        <label>Start Date</label>
-        <input type="date" id="filterStart" />
-
-        <label>End Date</label>
-        <input type="date" id="filterEnd" />
-
-        <button id="exportRange">Export Range (PDF)</button>
-        <button class="danger" id="deleteRange">Delete Range</button>
-      </div>
-
-      <div id="ledger"></div>
-    </div>
-  </div>
-
-</div>
-
-<script src="script.js"></script>
-</body>
-</html>
