@@ -1,135 +1,142 @@
-body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  background: #f4f6f6;
-  margin: 0;
+const $ = id => document.getElementById(id);
+const fmt = n => `$${Number(n).toFixed(2)}`;
+const num = v => Number(v) || 0;
+
+const STORE_KEY = "john-ledger-v1";
+
+const store = {
+  savings: 0,
+  mgo: 0,
+  checking: 0,
+  fronted: 0,
+  entries: []
+};
+
+function save() {
+  localStorage.setItem(STORE_KEY, JSON.stringify(store));
 }
 
-.app {
-  width: 100%;
-  padding: 24px 16px;
+function load() {
+  const d = JSON.parse(localStorage.getItem(STORE_KEY));
+  if (d) Object.assign(store, d);
 }
 
-h1 {
-  text-align: center;
-  margin-bottom: 24px;
+function apply(from, to, amt) {
+  if (from === "Savings") store.savings -= amt;
+  if (from === "MGO") store.mgo -= amt;
+  if (from === "Checking") store.checking -= amt;
+  if (from === "Fronted") store.fronted -= amt;
+
+  if (to === "Savings") store.savings += amt;
+  if (to === "MGO") store.mgo += amt;
+  if (to === "Checking") store.checking += amt;
+  if (to === "Fronted") store.fronted += amt;
 }
 
-h1 small {
-  font-weight: normal;
-  font-size: 14px;
+function refresh() {
+  $("savingsDisplay").textContent = fmt(store.savings);
+  $("mgoDisplay").textContent = fmt(store.mgo);
+  $("checkingDisplay").textContent = fmt(store.checking);
+  $("frontedDisplay").textContent = fmt(store.fronted);
+  save();
 }
 
-.card {
-  background: #ffffff;
-  border-radius: 16px;
-  padding: 24px;
-  box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+function renderHistory() {
+  const list = $("historyList");
+  list.innerHTML = "";
+
+  store.entries
+    .slice()
+    .sort((a, b) => new Date(b.date) - new Date(a.date))
+    .forEach(e => {
+      const row = document.createElement("div");
+      row.className = "history-item";
+
+      row.innerHTML = `
+        <div>
+          <strong>${e.date}</strong> — ${fmt(e.amount)}
+          <div class="tiny">${e.from} → ${e.to}</div>
+          ${e.note ? `<div class="tiny">${e.note}</div>` : ""}
+        </div>
+        <div>
+          ${e.to === "Fronted" ? `<button class="ghost resolve">Resolve</button>` : ""}
+          <button class="ghost delete">Delete</button>
+        </div>
+      `;
+
+      row.querySelector(".delete").onclick = () => {
+        apply(e.to, e.from, e.amount);
+        store.entries = store.entries.filter(x => x.id !== e.id);
+        refresh();
+        renderHistory();
+      };
+
+      const res = row.querySelector(".resolve");
+      if (res) {
+        res.onclick = () => row.classList.toggle("cleared");
+      }
+
+      list.appendChild(row);
+    });
 }
 
-.card + .card {
-  margin-top: 24px;
-}
+$("addEntry").onclick = () => {
+  const amt = num($("entryAmt").value);
+  if (!amt) return;
 
-.balances {
-  display: grid;
-  gap: 16px;
-}
+  const entry = {
+    id: crypto.randomUUID(),
+    date: $("entryDate").value || new Date().toISOString().slice(0,10),
+    amount: amt,
+    from: $("fromAcct").value,
+    to: $("toAcct").value,
+    note: $("entryNote").value
+  };
 
-.balance label {
-  font-weight: 700;
-  font-size: 14px;
-}
+  apply(entry.from, entry.to, amt);
+  store.entries.push(entry);
 
-.balance div {
-  font-size: 20px;
-  margin-top: 6px;
-}
+  $("entryAmt").value = "";
+  $("entryNote").value = "";
 
-.negative {
-  color: #b00020;
-}
+  refresh();
+  renderHistory();
+};
 
-label {
-  display: block;
-  margin-top: 12px;
-  font-weight: 600;
-}
+$("clearChecking").onclick = () => {
+  store.checking = 0;
+  refresh();
+};
 
-input, select {
-  width: 100%;
-  padding: 12px;
-  margin-top: 6px;
-  font-size: 16px;
-  border-radius: 10px;
-  border: 1px solid #ccc;
-}
+$("exportCsv").onclick = () => {
+  const from = $("fromDate").value;
+  const to = $("toDate").value;
 
-button {
-  margin-top: 16px;
-  padding: 12px;
-  border-radius: 12px;
-  border: 1px solid #ccc;
-  background: #fff;
-  cursor: pointer;
-}
+  const rows = store.entries.filter(e =>
+    (!from || e.date >= from) &&
+    (!to || e.date <= to)
+  );
 
-.tx {
-  border-bottom: 1px solid #ddd;
-  padding: 12px 0;
-}
+  let csv = "Date,Amount,From,To,Note\n";
+  rows.forEach(r => {
+    csv += `${r.date},${r.amount},${r.from},${r.to},"${r.note || ""}"\n`;
+  });
 
-.tx strong {
-  display: block;
-}
+  const blob = new Blob([csv], { type: "text/csv" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "john-ledger-export.csv";
+  a.click();
+};
 
-.tx-actions button {
-  margin-right: 8px;
-  margin-top: 8px;
-}
+document.querySelectorAll(".tab").forEach(btn => {
+  btn.onclick = () => {
+    document.querySelectorAll(".tab, .page").forEach(x => x.classList.remove("active"));
+    btn.classList.add("active");
+    document.getElementById(btn.dataset.tab).classList.add("active");
+  };
+});
 
-/* =========================
-   Ledger Page / Tabs
-   ========================= */
-
-.tabs {
-  display: flex;
-  gap: 8px;
-  margin-bottom: 16px;
-}
-
-.tab {
-  flex: 1;
-  padding: 10px;
-  border-radius: 999px;
-  border: 1px solid #ccc;
-  background: #fff;
-  cursor: pointer;
-}
-
-.tab.active {
-  background: #0b3d3b;
-  color: #fff;
-}
-
-.page {
-  display: none;
-}
-
-.page.active {
-  display: block;
-}
-
-/* =========================
-   Ledger Filters / Actions
-   ========================= */
-
-.filters {
-  display: grid;
-  gap: 12px;
-}
-
-.danger {
-  background: #fff;
-  border-color: #b00020;
-  color: #b00020;
-}
+load();
+refresh();
+renderHistory();
